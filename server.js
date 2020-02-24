@@ -4,37 +4,18 @@ const parser = require("body-parser");
 const express = require("express");
 const app = express();
 
+const { users } = require("./endpoints");
+
 app.use(parser.urlencoded({ extended: false }));
 app.use(parser.json());
 
-app.get("/", async (_req, res) => {
-  const { data } = await axios.get(
-    "https://jsonplaceholder.typicode.com/users"
-  );
-  res.sendStatus(200).send(data);
-});
+// Inyeccion de dependencias.
+const usersHandlers = users({ axios });
 
-app.post("/", async (req, res) => {
-  const { body } = req;
-  const { data } = await axios.post(
-    "https://jsonplaceholder.typicode.com/users",
-    body
-  );
-  res.sendStatus(201).send(data);
-});
-
-app.put("/:id", async (req, res) => {
-  const { body } = req;
-  const { id } = req.params;
-  await axios.put(`https://jsonplaceholder.typicode.com/users/${id}`, body);
-  res.sendStatus(204);
-});
-
-app.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
-  res.sendStatus(204);
-});
+app.get("/", usersHandlers.get);
+app.post("/", usersHandlers.post);
+app.put("/:id", usersHandlers.put);
+app.delete("/:id", usersHandlers.delete);
 
 app.listen(3000, function() {
   console.log("Example app listening on port 3000!");

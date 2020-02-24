@@ -1,11 +1,9 @@
-const axios = require("axios");
-
-const handlers = {
+const handlers = ({ axios }) => ({
   get: async (_req, res) => {
     const { data } = await axios.get(
       "https://jsonplaceholder.typicode.com/users"
     );
-    res.sendStatus(200).send(data);
+    res.status(200).send(data);
   },
   post: async (req, res) => {
     const { body } = req;
@@ -13,7 +11,7 @@ const handlers = {
       "https://jsonplaceholder.typicode.com/users",
       body
     );
-    res.sendStatus(201).send(data);
+    res.status(201).send(data);
   },
   put: async (req, res) => {
     const { body } = req;
@@ -26,6 +24,6 @@ const handlers = {
     await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
     res.sendStatus(204);
   }
-};
+});
 
 module.exports = handlers;
